@@ -255,7 +255,7 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                   />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="wave_default_link">Lien Wave</Label>
                   <Input
                     id="wave_default_link"
@@ -265,9 +265,9 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                     placeholder="https://pay.wave.com/..."
                     disabled={updateSettings.isPending}
                   />
-                </div>
+                </div> */}
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="orange_default_link">Lien Orange</Label>
                   <Input
                     id="orange_default_link"
@@ -277,9 +277,9 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                     placeholder="https://..."
                     disabled={updateSettings.isPending}
                   />
-                </div>
+                </div> */}
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="mtn_default_link">Lien MTN</Label>
                   <Input
                     id="mtn_default_link"
@@ -289,7 +289,7 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                     placeholder="https://..."
                     disabled={updateSettings.isPending}
                   />
-                </div>
+                </div> */}
 
                 <div className="space-y-2">
                   <Label htmlFor="telegram">Telegram</Label>
@@ -303,7 +303,7 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                   />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="moov_marchand_phone">Téléphone Marchand Moov</Label>
                   <Input
                     id="moov_marchand_phone"
@@ -312,9 +312,9 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                     placeholder="2250700000000"
                     disabled={updateSettings.isPending}
                   />
-                </div>
+                </div> */}
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="orange_marchand_phone">Téléphone Marchand Orange</Label>
                   <Input
                     id="orange_marchand_phone"
@@ -323,7 +323,7 @@ export function SettingsDialog({ open, onOpenChange, settings }: SettingsDialogP
                     placeholder="2250700000000"
                     disabled={updateSettings.isPending}
                   />
-                </div>
+                </div> */}
               </div>
             </TabsContent>
           </Tabs>
