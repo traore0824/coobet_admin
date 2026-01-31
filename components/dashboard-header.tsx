@@ -52,7 +52,7 @@ export function DashboardHeader() {
           </Sheet>
 
           <div>
-            <h1 className="text-xl font-bold">TURAINCASH Admin</h1>
+            <h1 className="text-xl font-bold">COOBET Admin</h1>
             <p className="text-sm text-muted-foreground">Gérez votre plateforme</p>
           </div>
         </div>

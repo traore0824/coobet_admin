@@ -2,7 +2,7 @@ import axios from "axios"
 import { toast } from "react-hot-toast"
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  baseURL: "http://api.coobet.app/",
 })
 
 // Detect if a message from API is in French
@@ -50,7 +50,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token available")
         }
 
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}auth/refresh`, { refresh })
+        const res = await axios.post(`http://api.coobet.app/auth/refresh`, { refresh })
         const newToken = res.data.access
 
         // Update both localStorage and cookies

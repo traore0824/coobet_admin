@@ -10,8 +10,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Tableau de Bord Admin TURAINCASH",
-  description: "Tableau de bord administrateur pour la plateforme TURAINCASH",
+  title: "Tableau de Bord Admin COOBET",
+  description: "Tableau de bord administrateur pour la plateforme COOBET",
 }
 
 export default function RootLayout({
