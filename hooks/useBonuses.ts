@@ -1,7 +1,8 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import api from "@/lib/axios"
+import { toast } from "react-hot-toast"
 
 export interface Bonus {
   id: number
@@ -43,6 +44,37 @@ export function useBonuses(filters: BonusFilters = {}) {
 
       const res = await api.get<BonusesResponse>("/mobcash/bonus", { params })
       return res.data
+    },
+  })
+}
+
+export interface CreateBonusInput {
+  email: string
+  amount: number
+  reason_bonus: string
+  transaction?: number | null
+}
+
+export function useCreateBonus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: CreateBonusInput) => {
+      const res = await api.post<Bonus>("/mobcash/create-bonus", data)
+      return res.data
+    },
+    onSuccess: () => {
+      toast.success("Bonus créé avec succès!")
+      queryClient.invalidateQueries({ queryKey: ["bonuses"] })
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.email?.[0] ||
+        error.response?.data?.amount?.[0] ||
+        error.response?.data?.reason_bonus?.[0] ||
+        error.response?.data?.detail ||
+        "Erreur lors de la création du bonus"
+      toast.error(errorMessage)
     },
   })
 }

@@ -7,22 +7,30 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Search } from "lucide-react"
+import { Loader2, Search, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CreateBonusDialog } from "@/components/create-bonus-dialog"
 
 export default function BonusesPage() {
   const [filters, setFilters] = useState<BonusFilters>({
     page: 1,
     page_size: 10,
   })
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   const { data: bonusesData, isLoading } = useBonuses(filters)
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Bonus</h2>
-        <p className="text-muted-foreground">Consultez les bonus et récompenses des utilisateurs</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Bonus</h2>
+          <p className="text-muted-foreground">Consultez les bonus et récompenses des utilisateurs</p>
+        </div>
+        <Button onClick={() => setCreateDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Créer un Bonus
+        </Button>
       </div>
 
       <Card>
@@ -135,6 +143,8 @@ export default function BonusesPage() {
           )}
         </CardContent>
       </Card>
+
+      <CreateBonusDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
     </div>
   )
 }
