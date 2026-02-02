@@ -140,14 +140,14 @@ export interface TransactionStatusResponse {
 }
 
 export interface ChangeTransactionStatusInput {
-  status?: "pending" | "success" | "failed" | "init_payment"
+  status?: "accept" | "error" | "timeouf" | "init_payment" | "pending"
   reference: string
 }
 
 export function useCheckTransactionStatus() {
   return useMutation({
     mutationFn: async (reference: string) => {
-      const res = await api.get<TransactionStatusResponse>(`/mobcash_inte/show-transaction-status?reference=${reference}`)
+      const res = await api.get<TransactionStatusResponse>(`/mobcash/show-transaction-status?reference=${reference}`)
       return res.data
     },
   })
