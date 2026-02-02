@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useTransactions, useCheckTransactionStatus, useChangeTransactionStatus, type Transaction, type TransactionFilters } from "@/hooks/useTransactions"
+import { useTransactions, useCheckTransactionStatus, useChangeTransactionStatus, type Transaction, type TransactionFilters, type TransactionStatusResponse } from "@/hooks/useTransactions"
 import { useNetworks } from "@/hooks/useNetworks"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -46,13 +46,13 @@ export default function TransactionsPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [changeStatusDialogOpen, setChangeStatusDialogOpen] = useState(false)
   const [statusDialogOpen, setStatusDialogOpen] = useState(false)
-  const [statusResponse, setStatusResponse] = useState<{ status: string; message?: string } | null>(null)
+  const [statusResponse, setStatusResponse] = useState<TransactionStatusResponse['data'] | null>(null)
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
 
   const handleCheckStatus = (transaction: Transaction) => {
     checkStatus.mutate(transaction.reference, {
       onSuccess: (data) => {
-        setStatusResponse({ status: data.status, message: data.message })
+        setStatusResponse(data.data)
         setStatusDialogOpen(true)
         queryClient.invalidateQueries({ queryKey: ["transactions"] })
       },
@@ -409,17 +409,52 @@ export default function TransactionsPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <div className="space-y-2">
-              <div>
-                <strong>Statut:</strong> <Badge variant={getStatusColor(statusResponse?.status || "")}>
-                  {getStatusLabel(statusResponse?.status || "")}
-                </Badge>
-              </div>
-              {statusResponse?.message && (
-                <div>
-                  <strong>Message:</strong> {statusResponse.message}
-                </div>
-              )}
+            <div className="space-y-3">
+              {statusResponse && Object.entries(statusResponse).map(([key, value]) => {
+                // Format the key for display
+                const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim()
+
+                // Skip empty values
+                if (value === null || value === undefined || value === "") return null
+
+                // Special handling for status field with badge
+                if (key.toLowerCase() === 'status') {
+                  return (
+                    <div key={key}>
+                      <strong>{formattedKey}:</strong>{" "}
+                      <Badge variant={getStatusColor(String(value))}>
+                        {String(value)}
+                      </Badge>
+                    </div>
+                  )
+                }
+
+                // Special formatting for reference-like fields
+                if (key.toLowerCase().includes('ref') || key.toLowerCase() === 'transref' || key.toLowerCase() === 'serviceref') {
+                  return (
+                    <div key={key}>
+                      <strong>{formattedKey}:</strong>{" "}
+                      <span className="font-mono text-sm">{String(value)}</span>
+                    </div>
+                  )
+                }
+
+                // Special formatting for amount fields
+                if (key.toLowerCase() === 'amount') {
+                  return (
+                    <div key={key}>
+                      <strong>{formattedKey}:</strong> {value} FCFA
+                    </div>
+                  )
+                }
+
+                // Default display for other fields
+                return (
+                  <div key={key}>
+                    <strong>{formattedKey}:</strong> {String(value)}
+                  </div>
+                )
+              })}
             </div>
           </div>
           <DialogFooter>

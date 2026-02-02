@@ -134,9 +134,8 @@ export function useCreateWithdrawal() {
 }
 
 export interface TransactionStatusResponse {
-  status: string
-  message?: string
-  transaction?: Transaction
+  code: number
+  data: Record<string, any>
 }
 
 export interface ChangeTransactionStatusInput {
