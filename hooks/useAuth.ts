@@ -42,13 +42,20 @@ export function useLogout() {
     },
     onSuccess: () => {
       clearAuthTokens()
+      const queryClient = (window as any).__query_client
+      if (queryClient) queryClient.clear()
       toast.success("Déconnexion réussie")
       router.push("/login")
+      // Force a window reload to be absolutely sure everything is reset
+      setTimeout(() => window.location.reload(), 100)
     },
     onError: () => {
       // Even if API call fails, clear tokens locally
       clearAuthTokens()
+      const queryClient = (window as any).__query_client
+      if (queryClient) queryClient.clear()
       router.push("/login")
+      setTimeout(() => window.location.reload(), 100)
     },
   })
 }

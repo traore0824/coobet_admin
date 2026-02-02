@@ -32,9 +32,7 @@ api.interceptors.response.use(
     // 🚫 Handle permission errors - redirect to login
     const permissionErrorMsg = error.response?.data?.details || error.response?.data?.detail || error.response?.data?.error || ""
     if (permissionErrorMsg.includes("You do not have permission to perform this action")) {
-      localStorage.clear()
-      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-      document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+      import("@/lib/auth").then(({ clearAuthTokens }) => clearAuthTokens())
       window.location.href = "/login"
       return Promise.reject(error)
     }
@@ -65,9 +63,7 @@ api.interceptors.response.use(
         return api(original)
       } catch (refreshError) {
         // Token refresh failed - clear tokens and redirect to login
-        localStorage.clear()
-        document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-        document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        import("@/lib/auth").then(({ clearAuthTokens }) => clearAuthTokens())
         window.location.href = "/login"
         return Promise.reject(refreshError)
       }

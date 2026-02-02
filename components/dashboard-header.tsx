@@ -17,9 +17,11 @@ import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { DashboardNav } from "@/components/dashboard-nav"
+import { useRouter } from "next/navigation"
 
 export function DashboardHeader() {
   const logout = useLogout()
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [userData, setUserData] = useState<ReturnType<typeof getUserData>>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -86,7 +88,7 @@ export function DashboardHeader() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
                 <User className="mr-2 h-4 w-4" />
                 Profil
               </DropdownMenuItem>

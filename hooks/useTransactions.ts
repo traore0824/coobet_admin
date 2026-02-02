@@ -147,7 +147,7 @@ export interface ChangeTransactionStatusInput {
 export function useCheckTransactionStatus() {
   return useMutation({
     mutationFn: async (reference: string) => {
-      const res = await api.get<TransactionStatusResponse>(`/mobcash/show-transaction-status?reference=${reference}`)
+      const res = await api.get<TransactionStatusResponse>(`/mobcash_inte/show-transaction-status?reference=${reference}`)
       return res.data
     },
   })
@@ -158,7 +158,7 @@ export function useChangeTransactionStatus() {
 
   return useMutation({
     mutationFn: async (data: ChangeTransactionStatusInput) => {
-      const res = await api.post("/mobcash/change-transaction", data)
+      const res = await api.post("/mobcash_inte/change-transaction-status-manuel", data)
       return res.data
     },
     onSuccess: () => {

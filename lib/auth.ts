@@ -37,14 +37,19 @@ export function getAuthTokens() {
 }
 
 export function clearAuthTokens() {
-  // Clear cookies
-  document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-  document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-  
-  // Clear localStorage
-  localStorage.removeItem("access_token")
-  localStorage.removeItem("refresh_token")
-  localStorage.removeItem("user_data")
+  // Clear all cookies (to be safe, though specific removal is usually enough)
+  const cookies = document.cookie.split(";")
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i]
+    const eqPos = cookie.indexOf("=")
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"
+  }
+
+  // Clear all storage
+  localStorage.clear()
+  sessionStorage.clear()
 }
 
 export function setUserData(data: LoginResponse["data"]) {

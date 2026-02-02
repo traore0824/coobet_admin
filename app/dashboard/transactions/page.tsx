@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Plus, Search, Copy, RefreshCw } from "lucide-react"
+import { Loader2, Plus, Search, Copy, RefreshCw, MoreHorizontal } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { CreateTransactionDialog } from "@/components/create-transaction-dialog"
 import { ChangeTransactionStatusDialog } from "@/components/change-transaction-status-dialog"
@@ -23,6 +23,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function TransactionsPage() {
   const [filters, setFilters] = useState<TransactionFilters>({
@@ -257,90 +265,96 @@ export default function TransactionsPage() {
                     const shouldShow = statusLower === "pending" || statusLower === "failed" || statusLower === "init_payment" || statusLower === "error"
                     return (
                       <TableRow key={transaction.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs">{displayValue(transaction.reference)}</span>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => handleCopy(transaction.reference)}
-                            title="Copier la référence"
-                          >
-                            <Copy className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{displayValue(transaction.user_app_id)}</Badge>
-                          {transaction.user_app_id && (
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs">{displayValue(transaction.reference)}</span>
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-6 w-6"
-                              onClick={() => handleCopy(transaction.user_app_id)}
-                              title="Copier l'ID utilisateur"
+                              onClick={() => handleCopy(transaction.reference)}
+                              title="Copier la référence"
                             >
                               <Copy className="h-3 w-3" />
                             </Button>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{displayValue(transaction.user_app_id)}</Badge>
+                            {transaction.user_app_id && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => handleCopy(transaction.user_app_id)}
+                                title="Copier l'ID utilisateur"
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {transaction.app_details?.name || displayValue(transaction.app)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getTypeTransColor(transaction.type_trans)}>
+                            {getTypeTransLabel(transaction.type_trans)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-semibold">{displayValue(transaction.amount)} FCFA</TableCell>
+                        <TableCell>{displayValue(transaction.phone_number)}</TableCell>
+                        <TableCell>{getNetworkName(transaction.network)}</TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusColor(transaction.status)}>
+                            {getStatusLabel(transaction.status)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {transaction.source ? (
+                            <Badge variant="outline">{displayValue(transaction.source)}</Badge>
+                          ) : (
+                            "-"
                           )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {transaction.app_details?.name || displayValue(transaction.app)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getTypeTransColor(transaction.type_trans)}>
-                          {getTypeTransLabel(transaction.type_trans)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="font-semibold">{displayValue(transaction.amount)} FCFA</TableCell>
-                      <TableCell>{displayValue(transaction.phone_number)}</TableCell>
-                      <TableCell>{getNetworkName(transaction.network)}</TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusColor(transaction.status)}>
-                          {getStatusLabel(transaction.status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {transaction.source ? (
-                          <Badge variant="outline">{displayValue(transaction.source)}</Badge>
-                        ) : (
-                          "-"
-                        )}
-                      </TableCell>
-                      <TableCell>{new Date(transaction.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          {shouldShow && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleCheckStatus(transaction)}
-                              disabled={checkStatus.isPending}
-                              title="Vérifier le statut"
-                            >
-                              {checkStatus.isPending ? (
-                                <>
-                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                  Vérification...
-                                </>
-                              ) : (
-                                <>
-                                  <RefreshCw className="h-4 w-4 mr-2" />
-                                  Vérifier le statut
-                                </>
+                        </TableCell>
+                        <TableCell>{new Date(transaction.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Ouvrir le menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              {shouldShow && (
+                                <DropdownMenuItem
+                                  onClick={() => handleCheckStatus(transaction)}
+                                  disabled={checkStatus.isPending}
+                                >
+                                  {checkStatus.isPending ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Vérification...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <RefreshCw className="mr-2 h-4 w-4" />
+                                      Vérifier le statut
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
                               )}
-                            </Button>
-                          )}
-                          <Button variant="ghost" size="sm" onClick={() => handleChangeStatus(transaction)}>
-                            <RefreshCw className="h-4 w-4 mr-1" />
-                            Changer Statut
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                              <DropdownMenuItem onClick={() => handleChangeStatus(transaction)}>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                Changer Statut
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
                     )
                   })}
                 </TableBody>
